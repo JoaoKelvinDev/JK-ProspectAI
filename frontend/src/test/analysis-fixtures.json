@@ -1,0 +1,74 @@
+{
+  "empty": {
+    "suggestions": [],
+    "provider": "mock",
+    "generation_mode": "simulated",
+    "prompt_version": "1.0.0",
+    "basis": "provided_evidence",
+    "status": "insufficient_evidence",
+    "analyzed_at": "2026-10-25T12:00:00Z",
+    "business_is_simulated": true,
+    "facts": [
+      {
+        "id": "business_profile",
+        "kind": "business_profile",
+        "statement": "Cadastro informado: Açaiteria Simulada 01; segmento acaiterias; Teresina/PI.",
+        "need": null,
+        "evidence": []
+      }
+    ],
+    "limitations": [
+      "Análise simulada por regras e modelos de texto; nenhum LLM foi utilizado.",
+      "Fatos descrevem o contexto fornecido. Fontes e observações do operador não foram autenticadas ou verificadas automaticamente; revise antes de decidir.",
+      "O estabelecimento é fictício; o resultado serve para demonstração.",
+      "Sem necessidade documentada atual, nenhuma solução é sugerida. Segmento e URL vazia não comprovam uma oportunidade."
+    ]
+  },
+  "withNeed": {
+    "suggestions": [
+      {
+        "need": "online_menu",
+        "fact_ids": ["need_0"],
+        "hypothesis": "Se a necessidade de cardápio digital for confirmada com o responsável, uma solução poderá ser adequada ao processo do negócio.",
+        "opportunity": "Avaliar a viabilidade de cardápio digital com o contexto registrado.",
+        "suggested_solution": "Considerar cardápio digital, com escopo definido após validação.",
+        "validation_question": "Como o negócio atende hoje essa necessidade e quais requisitos precisariam ser considerados em um projeto de cardápio digital?"
+      }
+    ],
+    "provider": "mock",
+    "generation_mode": "simulated",
+    "prompt_version": "1.0.0",
+    "basis": "provided_evidence",
+    "status": "ready_for_review",
+    "analyzed_at": "2026-10-25T12:00:00Z",
+    "business_is_simulated": true,
+    "facts": [
+      {
+        "id": "business_profile",
+        "kind": "business_profile",
+        "statement": "Cadastro informado: Açaiteria Simulada 01; segmento acaiterias; Teresina/PI.",
+        "need": null,
+        "evidence": []
+      },
+      {
+        "id": "need_0",
+        "kind": "documented_need",
+        "statement": "Necessidade registrada pelo operador: cardápio digital.",
+        "need": "online_menu",
+        "evidence": [
+          {
+            "source": "Origem fictícia para demonstração",
+            "source_url": "https://source.example/",
+            "observed_at": "2026-10-25T11:00:00Z",
+            "description": "Observação fictícia de necessidade para testar a análise."
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "Análise simulada por regras e modelos de texto; nenhum LLM foi utilizado.",
+      "Fatos descrevem o contexto fornecido. Fontes e observações do operador não foram autenticadas ou verificadas automaticamente; revise antes de decidir.",
+      "O estabelecimento é fictício; o resultado serve para demonstração."
+    ]
+  }
+}

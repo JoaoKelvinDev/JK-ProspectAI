@@ -190,6 +190,48 @@ try {
   assert.equal(complete.score, 100);
   assert.equal(complete.assessed_max_score, 100);
   assert.deepEqual(complete.warnings, ['simulated_data']);
+  const emptyAnalysis = await post('/api/v1/business-analysis/analyze', input);
+  assert.equal(emptyAnalysis.generation_mode, 'simulated');
+  assert.equal(emptyAnalysis.status, 'insufficient_evidence');
+  assert.deepEqual(emptyAnalysis.suggestions, []);
+  const analysis = await post('/api/v1/business-analysis/analyze', completeInput);
+  assert.equal(analysis.status, 'ready_for_review');
+  assert.equal(analysis.provider, 'mock');
+  assert.equal(analysis.prompt_version, '1.0.0');
+  assert.equal(analysis.business_is_simulated, true);
+  assert.deepEqual(
+    analysis.suggestions.map((item) => item.need),
+    ['website', 'online_menu', 'online_ordering'],
+  );
+  for (const suggestion of analysis.suggestions) {
+    assert(
+      suggestion.fact_ids.every((id) =>
+        analysis.facts.some((fact) => fact.id === id && fact.need === suggestion.need),
+      ),
+    );
+  }
+  const removedAnalysis = await post('/api/v1/business-analysis/analyze', input);
+  assert.deepEqual(removedAnalysis.suggestions, []);
+  await post('/api/v1/business-analysis/analyze', { ...input, provider: 'custom' }, 422);
+  const messageInput = { ...completeInput, selected_need: 'online_menu' };
+  const draft = await post('/api/v1/messages/generate', messageInput);
+  assert.equal(draft.status, 'draft');
+  assert.equal(draft.review_status, 'pending_review');
+  assert.equal(draft.delivery_status, 'not_sent');
+  assert.equal(draft.generation_mode, 'simulated');
+  assert.equal(draft.business_is_simulated, true);
+  assert.equal(draft.locale, 'pt-BR');
+  assert.equal(draft.channel, 'short_message');
+  assert.equal(draft.content.subject, null);
+  assert(draft.content.body.includes(business.name));
+  assert(draft.content.body.includes('cardápio digital'));
+  assert(draft.context_facts.every((fact) => fact.need === 'online_menu' && fact.evidence.length));
+  const email = await post('/api/v1/messages/generate', { ...messageInput, channel: 'email' });
+  assert.equal(email.channel, 'email');
+  assert(email.content.subject && email.content.body.includes('Atenciosamente'));
+  await post('/api/v1/messages/generate', { ...input, selected_need: 'online_menu' }, 409);
+  await post('/api/v1/messages/generate', { ...messageInput, selected_need: 'scheduling' }, 409);
+  await post('/api/v1/messages/generate', { ...messageInput, recipient: 'not-accepted' }, 422);
   const withoutEvidence = await post('/api/v1/lead-scoring/score', input);
   assert.equal(
     withoutEvidence.score,
@@ -206,6 +248,20 @@ try {
     });
     assert.equal(ignored.score, 5);
     assert(ignored.warnings.includes(warning));
+    const ignoredAnalysis = await post('/api/v1/business-analysis/analyze', {
+      ...input,
+      needs: [{ need: 'online_menu', evidence: { ...evidence, observed_at: at } }],
+    });
+    assert.deepEqual(ignoredAnalysis.suggestions, []);
+    await post(
+      '/api/v1/messages/generate',
+      {
+        ...input,
+        selected_need: 'online_menu',
+        needs: [{ need: 'online_menu', evidence: { ...evidence, observed_at: at } }],
+      },
+      409,
+    );
   }
   const sameOrigin = structuredClone(completeInput);
   sameOrigin.website_review.evidence[1].source_url = 'https://source.example/another-page';
@@ -234,7 +290,7 @@ try {
   assert.equal(blocked.reason, 'blocked_destination');
   assert.deepEqual(blocked.evidence, []);
   console.log(
-    'PASS: build e assets, proxy local, filtros e lista vazia, inspeção, evidências completas, scores 5/45/100, remoção e validade de evidências, validação=422 e bloqueio interno.',
+    'PASS: build e assets, proxy local, filtros, inspeção, scores 5/45/100, análise rastreável, rascunhos de mensagem curta/e-mail sem envio, evidências atuais, validação=422, contexto=409 e bloqueio interno.',
   );
 } catch (error) {
   console.error(error);

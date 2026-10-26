@@ -6,12 +6,14 @@ Data: 25/10/2026.
 
 | Trabalho solicitado | Situação |
 | --- | --- |
-| Aparência e navegação em desktop e celular | Código responsivo revisado e corrigido; inspeção visual renderizada pendente de navegador conectado. |
-| Fluxo pesquisar → selecionar → inspecionar → registrar evidência → pontuar | Aprovado em testes de interface JSDOM e integração HTTP com FastAPI real. |
+| Aparência e navegação em desktop e celular | O usuário informou ter visualizado a primeira versão em desktop e mobile. A inspeção visual pelo agente, incluindo o novo painel do módulo 4, continua pendente de navegador conectado. |
+| Fluxo pesquisar → selecionar → inspecionar → registrar evidência → pontuar → analisar | Aprovado em testes de interface JSDOM e integração HTTP com FastAPI real. |
 | Correções de usabilidade identificadas | Implementadas e cobertas por regressão; verificação visual final pendente. |
 
-O Módulo 4 não foi iniciado. A revisão visual não foi declarada concluída sem observar
-o frontend em um navegador real.
+Após essa revisão inicial, o usuário informou que viu a interface em desktop e mobile
+e autorizou o módulo 4. O painel de análise simulada foi acrescentado, com contexto,
+hipóteses, oportunidades, soluções e fontes. Essa autorização não foi interpretada como
+verificação visual dos estados ou tamanhos específicos listados ao final deste documento.
 
 ## Problemas encontrados e correções
 
@@ -44,8 +46,8 @@ Os testes calculam as cores declaradas; não medem pixels de uma captura de tela
 
 | Verificação | Resultado |
 | --- | --- |
-| Frontend: Vitest e Testing Library | 54 testes aprovados em 6 arquivos. |
-| Backend: Pytest | 250 testes aprovados; permanece o aviso conhecido de depreciação Starlette/HTTPX. |
+| Frontend: Vitest e Testing Library | 62 testes aprovados em 7 arquivos, incluindo o módulo 4. |
+| Backend: Pytest | 296 testes aprovados; permanece o aviso conhecido de depreciação Starlette/HTTPX. |
 | TypeScript estrito e build Vite | Aprovados. |
 | Formatação Prettier | Aprovada. |
 | Integração HTTP do build com FastAPI real | Aprovada em servidores temporários isolados, encerrados ao terminar. |
@@ -63,13 +65,21 @@ O teste de integração também verifica:
 - Descarte de evidências antigas ou futuras.
 - Rejeição de revisão de ausência baseada em duas URLs da mesma origem.
 - Erro `422` para filtros inválidos e bloqueio de URL interna pelo Inspector.
+- Análise simulada sem evidências, com necessidades e com revisão manual de site;
+  referências da mesma necessidade, descarte temporal e rejeição de escolha de provedor.
+
+Os testes do novo painel também verificam a invalidação da análise após alteração de
+evidências ou inspeção, preservação do score, cancelamento por nova pesquisa, erros e
+renderização de HTML externo como texto. Um alerta duplicado encontrado nos testes foi
+corrigido para que falhas de análise apareçam somente junto da ação correspondente.
 
 Os dados usados nesses testes são fictícios. Nenhuma fonte externa foi consultada.
 
 ## Pendências de navegador real
 
-A ferramenta de navegação retornou `browsers: []`, e a tentativa de criar o navegador
-interno também informou indisponibilidade. Não há capturas de tela ou aprovação visual.
+A ferramenta de navegação retornou `browsers: []`, inclusive na nova consulta após a
+implementação do módulo 4. Na revisão inicial, a tentativa de criar o navegador interno
+também informou indisponibilidade. Não há capturas ou aprovação visual pelo agente.
 
 Assim que houver navegador conectado, verificar:
 
@@ -78,6 +88,7 @@ Assim que houver navegador conectado, verificar:
 - Formulários e diálogos: área visível, foco inicial, Tab, Shift+Tab e Escape.
 - Mensagens de erro, campos inválidos, lista vazia e indicadores de conexão.
 - Layout com necessidade, atividade e revisão manual registradas e critérios expandidos.
+- Novo painel de análise com sugestões, fatos expandidos e descrições longas das fontes.
 - Ausência de cortes, sobreposições e rolagem horizontal indevida na página.
 
 JSDOM valida os eventos e o estado, mas não substitui essa inspeção visual nem o

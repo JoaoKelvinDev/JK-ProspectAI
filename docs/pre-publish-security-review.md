@@ -3,6 +3,9 @@
 Data: 25/10/2026. Escopo: código local dos módulos Discovery, Website Inspector,
 Lead Scoring e primeira interface React, incluindo testes, documentação e lockfiles.
 
+O relatório original abaixo registra o estado anterior ao módulo 4. A revisão da
+implementação simulada do Analyzer está registrada no complemento ao final.
+
 ## Resultado
 
 Não foram identificados segredos ou dados reais de clientes nos arquivos revisados,
@@ -133,3 +136,25 @@ do último commit não a remove do histórico.
 - [PyPI: API JSON e vulnerabilidades por versão](https://docs.pypi.org/api/json/).
 - [Vite: exposição de variáveis de ambiente no cliente](https://vite.dev/guide/env-and-mode).
 - [GitHub: secret scanning e tratamento de credenciais expostas](https://docs.github.com/en/code-security/concepts/secret-security/secret-scanning).
+
+## Complemento: módulo 4 simulado
+
+Após a implementação inicial do AI Business Analyzer, a varredura Gitleaks foi repetida
+sobre os arquivos publicáveis atualizados e sobre o novo build do frontend. Nenhum
+segredo foi identificado. Os dados de teste continuam fictícios. O módulo não adiciona
+credenciais, dependências, consultas externas, armazenamento ou envio de mensagens.
+
+O serviço seleciona evidências atuais antes de chamar o provedor, mantém os fatos
+separados das sugestões e valida referências e necessidades. O provedor recebe uma
+cópia dos fatos; descrições não controlam os modelos de texto do simulador. A interface
+renderiza conteúdo como texto e invalida a análise quando o contexto muda. Os testes
+incluem tentativas de instrução em descrições, referências inválidas, limite temporal,
+cancelamento e exibição segura de HTML.
+
+Verificações desta implementação: 296 testes backend e 62 frontend aprovados, integração
+HTTP com FastAPI real aprovada, tipagem/build e verificações de formatação aprovados.
+As dependências permanecem nas mesmas versões consultadas na revisão original.
+
+Este complemento cobre o provedor simulado. Um futuro LLM real exigirá análise própria
+de credenciais, envio de dados ao fornecedor, custo, validação do texto e prompt injection;
+a existência de instruções versionadas, sozinha, não resolve esses riscos.

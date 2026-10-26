@@ -12,14 +12,24 @@ import {
   Trash2,
 } from 'lucide-react';
 import { inspectionReasons, needLabels, segments } from '../contracts';
-import type { BusinessEntry, ScoringEvidence } from '../contracts';
-import { formatDate, initials } from '../lib/format';
+import type {
+  BusinessEntry,
+  MessageContent,
+  MessageGenerationOptions,
+  ScoringEvidence,
+} from '../contracts';
+import { businessKey, formatDate, initials } from '../lib/format';
 import { ScoreCard } from './ScoreCard';
+import { AnalysisCard } from './AnalysisCard';
+import { MessageComposer } from './MessageComposer';
 
 export function BusinessPanel({
   entry,
   onInspect,
   onScore,
+  onAnalyze,
+  onGenerateMessage,
+  onEditMessage,
   onAddEvidence,
   onRemove,
   onBack,
@@ -27,6 +37,9 @@ export function BusinessPanel({
   entry: BusinessEntry | undefined;
   onInspect: () => void;
   onScore: () => void;
+  onAnalyze: () => void;
+  onGenerateMessage: (options: MessageGenerationOptions) => void;
+  onEditMessage: (content: MessageContent) => void;
   onAddEvidence: () => void;
   onRemove: (kind: 'need' | 'activity' | 'review', index?: number) => void;
   onBack: () => void;
@@ -149,7 +162,7 @@ export function BusinessPanel({
             ? (inspectionReasons[inspection.reason] ?? 'Revise as evidências da consulta.')
             : 'Sem informação não significa sem site. A URL ainda precisa de verificação.'}
         </p>
-        {entry.error && entry.errorAction !== 'score' && (
+        {entry.error && entry.errorAction === 'inspect' && (
           <div role="alert" className="panel-error">
             {entry.error}
           </div>
@@ -332,6 +345,47 @@ export function BusinessPanel({
           O score não representa probabilidade de venda nem autorização para contato.
         </p>
       </div>
+      <div className="detail-section analysis-section">
+        <div className="section-title">
+          <ClipboardList size={16} />
+          <h3>Análise do negócio</h3>
+        </div>
+        {entry.analysis ? (
+          <AnalysisCard analysis={entry.analysis} />
+        ) : (
+          <p className="small-note">
+            Separe o contexto registrado, as hipóteses e as soluções possíveis. Esta versão usa um
+            provedor simulado, sem IA real.
+          </p>
+        )}
+        {entry.error && entry.errorAction === 'analyze' && (
+          <div role="alert" className="panel-error">
+            {entry.error}
+          </div>
+        )}
+        <button
+          className="button secondary full-width"
+          disabled={entry.pending !== null}
+          onClick={onAnalyze}
+        >
+          {entry.pending === 'analyze' ? (
+            <LoaderCircle className="spin" size={16} />
+          ) : (
+            <ClipboardList size={16} />
+          )}
+          {entry.pending === 'analyze'
+            ? 'Analisando…'
+            : entry.analysis
+              ? 'Gerar nova análise simulada'
+              : 'Gerar análise simulada'}
+        </button>
+      </div>
+      <MessageComposer
+        key={businessKey(business)}
+        entry={entry}
+        onGenerate={onGenerateMessage}
+        onEdit={onEditMessage}
+      />
       <footer className="detail-source">
         Origem: {business.source}
         {business.source_id ? ` · ${business.source_id}` : ''}

@@ -1,13 +1,25 @@
 import { vi } from 'vitest';
 import { z } from 'zod';
 import fixtures from './backend-fixtures.json';
-import { businessSchema, inspectionSchema, scoreSchema } from '../contracts';
-import type { Business, ScoreRequest } from '../contracts';
+import analysisFixtures from './analysis-fixtures.json';
+import messageFixtures from './message-fixtures.json';
+import {
+  analysisSchema,
+  businessSchema,
+  inspectionSchema,
+  messageDraftSchema,
+  scoreSchema,
+} from '../contracts';
+import type { Business, MessageGenerationRequest, ScoreRequest } from '../contracts';
 
 export const businesses = businessSchema.array().parse(fixtures.businesses);
 export const inspection = inspectionSchema.parse(fixtures.inspection);
 export const basicScore = scoreSchema.parse(fixtures.basicScore);
 export const enrichedScore = scoreSchema.parse(fixtures.enrichedScore);
+export const emptyAnalysis = analysisSchema.parse(analysisFixtures.empty);
+export const enrichedAnalysis = analysisSchema.parse(analysisFixtures.withNeed);
+export const shortMessage = messageDraftSchema.parse(messageFixtures.short_message);
+export const emailMessage = messageDraftSchema.parse(messageFixtures.email);
 const scoreVariants = z.record(z.string(), scoreSchema).parse(fixtures.scoreVariants);
 export function json(value: unknown, status = 200): Response {
   return new Response(JSON.stringify(value), {
@@ -30,6 +42,8 @@ export function mockBackend(override?: Override) {
           '/api/v1/discovery/search': { post: {} },
           '/api/v1/website-inspector/inspect': { post: {} },
           '/api/v1/lead-scoring/score': { post: {} },
+          '/api/v1/business-analysis/analyze': { post: {} },
+          '/api/v1/messages/generate': { post: {} },
         },
       });
     if (path === '/api/v1/discovery/search') return json(businesses);
@@ -65,6 +79,14 @@ export function mockBackend(override?: Override) {
         is_simulated: business.is_simulated,
         reason: business.is_simulated ? 'simulated_business' : 'missing_url',
       });
+    }
+    if (path === '/api/v1/messages/generate') {
+      const query = body as MessageGenerationRequest;
+      return json(query.channel === 'email' ? emailMessage : shortMessage);
+    }
+    if (path === '/api/v1/business-analysis/analyze') {
+      const query = body as ScoreRequest;
+      return json(query.needs.length ? enrichedAnalysis : emptyAnalysis);
     }
     if (path === '/api/v1/lead-scoring/score') {
       const query = body as ScoreRequest;

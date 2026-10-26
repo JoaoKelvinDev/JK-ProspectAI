@@ -1,6 +1,12 @@
 import { z } from 'zod';
-import { businessSchema, inspectionSchema, scoreSchema } from '../contracts';
-import type { Business, ScoreRequest, SearchFilters } from '../contracts';
+import {
+  analysisSchema,
+  businessSchema,
+  inspectionSchema,
+  messageDraftSchema,
+  scoreSchema,
+} from '../contracts';
+import type { Business, MessageGenerationRequest, ScoreRequest, SearchFilters } from '../contracts';
 
 export class ApiError extends Error {
   constructor(
@@ -104,6 +110,8 @@ export const api = {
       '/api/v1/discovery/search',
       '/api/v1/website-inspector/inspect',
       '/api/v1/lead-scoring/score',
+      '/api/v1/business-analysis/analyze',
+      '/api/v1/messages/generate',
     ];
     if (required.some((path) => !description.paths[path]?.post)) {
       throw new ApiError(
@@ -120,4 +128,16 @@ export const api = {
     request('/api/v1/website-inspector/inspect', inspectionSchema, business, signal),
   score: (input: ScoreRequest, signal?: AbortSignal) =>
     request('/api/v1/lead-scoring/score', scoreSchema, input, signal),
+  analyze: (input: ScoreRequest, signal?: AbortSignal) =>
+    request('/api/v1/business-analysis/analyze', analysisSchema, input, signal),
+  generateMessage: async (input: MessageGenerationRequest, signal?: AbortSignal) => {
+    const draft = await request('/api/v1/messages/generate', messageDraftSchema, input, signal);
+    if (
+      draft.selected_need !== input.selected_need ||
+      draft.channel !== input.channel ||
+      draft.business_is_simulated !== input.business.is_simulated
+    )
+      throw new ApiError('O serviço retornou um rascunho incompatível com o pedido.');
+    return draft;
+  },
 };

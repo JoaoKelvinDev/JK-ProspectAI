@@ -1971,6 +1971,87 @@ tbody tr.selected td:first-child {
     display: none;
   }
 }
+.analysis-card {
+  font-size: 12px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  margin-bottom: 16px;
+}
+.analysis-limitations,
+.analysis-facts ol,
+.analysis-suggestion ul {
+  padding-left: 18px;
+}
+.analysis-limitations {
+  color: #5f7058;
+  margin-block: 12px;
+}
+.analysis-card summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #176a4c;
+}
+.analysis-source {
+  padding-left: 10px;
+  border-left: 2px solid #dfe6d9;
+  margin-block: 8px;
+}
+.analysis-source small {
+  display: block;
+  color: #5f7058;
+}
+.analysis-suggestion {
+  border-top: 1px solid #dfe6d9;
+  padding-top: 14px;
+  margin-top: 14px;
+}
+.analysis-suggestion h4 {
+  font-size: 13px;
+  font-weight: 600;
+}
+.analysis-suggestion dt {
+  font-weight: 600;
+  margin-top: 9px;
+}
+.analysis-suggestion dd {
+  margin: 0;
+}
+.message-options,
+.message-draft {
+  display: grid;
+  gap: 12px;
+  font-size: 12px;
+  line-height: 1.6;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.message-draft {
+  margin-top: 18px;
+}
+.message-options label,
+.message-draft label {
+  display: grid;
+  gap: 5px;
+  font-weight: 600;
+}
+.message-draft textarea {
+  resize: vertical;
+  min-height: 180px;
+  width: 100%;
+}
+.message-options select,
+.message-draft input {
+  width: 100%;
+  min-width: 0;
+}
+.message-draft summary {
+  cursor: pointer;
+  color: #176a4c;
+  font-weight: 600;
+}
+.message-draft ul {
+  padding-left: 18px;
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

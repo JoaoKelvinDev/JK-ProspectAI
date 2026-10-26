@@ -29,11 +29,15 @@ um estabelecimento real. Ele registra evidências e uma conclusão conservadora,
 O módulo Lead Scoring calcula uma pontuação comercial de 0 a 100 com regras versionadas,
 evidências fornecidas pelo operador e justificativas por critério. Ele não consulta fontes.
 
+O módulo AI Business Analyzer tem uma primeira implementação **simulada, sem LLM**.
+Ele organiza o contexto recebido e sugere soluções somente para necessidades com
+evidências atuais, mantendo hipóteses e sugestões separadas dos fatos do contexto.
+
 A primeira versão do frontend está em `frontend/`, com React, TypeScript, Vite e
 Tailwind CSS. Permite pesquisar, cadastrar registros manuais, inspecionar URLs,
-documentar evidências e consultar pontuações com seus critérios.
+documentar evidências, consultar pontuações e gerar análises simuladas rastreáveis.
 
-Os módulos atuais não implementam IA, mensagens ou persistência. Nenhuma credencial é necessária.
+Os módulos atuais não executam IA real, mensagens ou persistência. Nenhuma credencial é necessária.
 
 ## Antes de enviar ao GitHub
 
@@ -94,14 +98,17 @@ silenciosamente. O servidor escuta somente em `127.0.0.1`.
    verificações e duas origens distintas. Não há consulta automática dessas fontes.
 6. **Calcular pontuação:** score, cobertura dos critérios, justificativas, referências e
    avisos. Adicionar/remover evidências ou executar nova inspeção invalida o score anterior.
+7. **Gerar análise simulada:** fatos do contexto recebido, hipóteses, oportunidades,
+   soluções e perguntas para revisão. Sem necessidade documentada atual, nenhuma solução
+   é sugerida. Adicionar/remover evidências ou executar nova inspeção invalida a análise.
 
 O cadastro e as evidências ficam **apenas na memória da página**. Atualizar, fechar ou
 reabrir a página perde a sessão. Uma nova pesquisa substitui os resultados do Discovery;
 cadastros manuais e suas evidências permanecem durante a sessão. Não há banco de dados,
-login, envio de mensagens ou geração de conteúdo por IA na interface atual.
+login, envio de mensagens ou geração de conteúdo por um LLM na interface atual.
 
 O estado da conexão verifica `/health` e a presença dos módulos em `/openapi.json`;
-um processo antigo que responde saúde, mas não oferece Inspector ou Scoring, é indicado
+um processo antigo que responde saúde, mas não oferece Inspector, Scoring ou Analyzer, é indicado
 como **Backend desatualizado**. Reinicie o backend no terminal do projeto e use o botão
 de conexão para verificar novamente. O modo de desenvolvimento acima recarrega alterações
 somente em `backend/app`, evitando continuar com módulos antigos após mudanças de código.
@@ -386,6 +393,95 @@ aceitam até 10 verificações e 10 evidências. Campos desconhecidos, datas sem
 origens insuficientes e resultados incoerentes retornam HTTP `422`. O cliente não pode
 sobrescrever pesos, score ou versão da política pelo pedido.
 
+## AI Business Analyzer: módulo 4
+
+`POST /api/v1/business-analysis/analyze` recebe o mesmo contexto de evidências do Scoring:
+`business`, `website_inspection`, `website_review`, `needs` e `activity_evidence`. Não
+recebe pontuação, instruções livres, escolha de provedor ou chave de API. Limites de
+listas, datas com fuso e validações de coerência são reutilizados dos contratos existentes.
+
+O módulo não depende de calcular o score primeiro e não altera as regras de pontuação.
+
+Exemplo simulado com uma necessidade documentada (a data deve estar nos últimos 90 dias):
+
+```json
+{
+  "business": {
+    "name": "Restaurante Simulado",
+    "category": "restaurantes",
+    "location": {"city": "Teresina", "state": "PI"},
+    "source": "mock",
+    "is_simulated": true
+  },
+  "needs": [{
+    "need": "online_menu",
+    "evidence": {
+      "source": "Observação fictícia para demonstração",
+      "source_url": "https://source.example/",
+      "observed_at": "2026-10-25T12:00:00Z",
+      "description": "Necessidade simulada de organizar um cardápio digital."
+    }
+  }]
+}
+```
+
+A resposta separa:
+
+- `facts`: registros do contexto, cada um com identificador e evidências utilizadas.
+  O cadastro é apresentado como informação recebida. Uma necessidade descreve o que
+  o operador registrou; a aplicação não confirma automaticamente a veracidade da fonte.
+- `suggestions`: hipótese condicional, oportunidade, solução sugerida e pergunta para
+  validação. Cada sugestão referencia fatos da mesma necessidade por `fact_ids`.
+- `limitations`: simulação, qualidade das fontes e eventual descarte de evidências.
+- `status`: `ready_for_review` quando há sugestões ou `insufficient_evidence` quando não há.
+- `analyzed_at`, `prompt_version="1.0.0"`, `basis="provided_evidence"`, `provider="mock"`
+  e `generation_mode="simulated"`. `business_is_simulated` informa separadamente se o
+  estabelecimento é fictício: analisar um registro manual também usa o provedor simulado.
+
+Não há recomendações baseadas apenas no segmento. URL vazia, HTTP 404 ou inspeção
+inconclusiva não geram uma necessidade de site. Uma revisão manual atual `not_found`,
+com as duas verificações e origens exigidas, pode sustentar a sugestão de **avaliar**
+um site; a redação mantém explícito que site não localizado não prova inexistência.
+
+Evidências com mais de 90 dias ou com data futura são removidas antes de chamar o provedor.
+Uma revisão/inspeção com qualquer evidência fora desse prazo é descartada por completo.
+As observações atuais utilizadas preservam origem, URL, data e descrição. Descrições são
+tratadas como dados, nunca como instruções. Os fatos da resposta são construídos pelo
+serviço; o provedor recebe uma cópia e pode retornar apenas sugestões estruturadas.
+
+A saída passa por validação Pydantic, incluindo referências existentes, necessidades
+compatíveis, ausência de duplicações e limites. Falhas conhecidas ou saída inválida
+do provedor retornam `502`, prazo de 10 segundos excedido retorna `504`, entrada inválida
+retorna `422`. Os erros de provedor não expõem detalhes internos.
+
+Na interface: pesquise ou adicione um negócio, registre uma necessidade em **Registrar
+evidência** e clique em **Gerar análise simulada** no painel de detalhes. Abra **Fatos
+do contexto e evidências utilizadas** para conferir as origens. Sem evidências, o botão
+continua disponível para demonstrar a conclusão de informação insuficiente.
+
+Arquivos principais:
+
+```text
+backend/app/schemas/business_analysis.py          # Contratos de entrada, fatos e análise
+backend/app/services/business_analysis_service.py # Seleção temporal e validação de referências
+backend/app/ai/base.py                           # Interface assíncrona e erro do provedor
+backend/app/ai/mock_analyzer.py                  # Sugestões determinísticas de demonstração
+backend/app/ai/solutions.py                      # Vocabulário das soluções aceitas
+backend/app/ai/prompts.py                        # Instruções versionadas
+backend/app/api/routes/business_analysis.py      # Endpoint e tratamento HTTP de falhas
+backend/tests/test_business_analysis.py          # Regras, falhas, contratos e isolamento
+frontend/src/components/AnalysisCard.tsx         # Contexto, hipóteses, soluções e fontes
+frontend/src/BusinessAnalysis.test.tsx            # Fluxo, invalidação, cancelamento e HTML
+frontend/src/test/analysis-fixtures.json          # Respostas obtidas com o FastAPI real
+```
+
+A composição em `api/dependencies.py`, as rotas em `main.py`, os contratos/clientes React,
+o estado da sessão e o teste de integração também incluem esse módulo. Não houve novas
+dependências. O protocolo permite implementar um provedor real posteriormente, com sua
+própria configuração, identidade na resposta, avaliação de qualidade e controles de custo.
+Referências válidas não garantem a veracidade de um texto gerado por um futuro LLM;
+essa integração exigirá validação específica e revisão humana.
+
 ## Website Inspector: Etapa 2
 
 `POST /api/v1/website-inspector/inspect` recebe diretamente um objeto `Business`, no
@@ -589,6 +685,12 @@ Com as versões do lockfile, o TestClient de Starlette emite um aviso de depreci
 o uso de HTTPX. A suíte continua executando; o aviso não é suprimido. Não foi adicionada
 uma biblioteca alternativa fora das dependências aprovadas.
 
-O próximo módulo previsto é AI Business Analyzer. Sua implementação deverá manter a
-separação entre fatos, hipóteses e recomendações e não poderá inventar informações.
-A solicitação atual exige concluir a revisão visual do frontend antes de iniciar esse módulo.
+Os testes do Analyzer verificam seleção temporal, referências, hipóteses condicionais,
+ausência de diagnósticos por segmento, separação da simulação, comandos em descrições,
+limites, cancelamento e falhas do provedor. O frontend testa a invalidação da análise
+e a apresentação de descrições externas como texto. O teste de integração inclui o
+endpoint real de análise pelo proxy, com e sem evidências.
+
+O módulo 4 está implementado com provedor simulado. A integração com um LLM real e o
+módulo 5 (Message Generator) continuam fora desta implementação, aguardando uma próxima
+etapa. A persistência permanece prevista para o final do MVP.

@@ -1,8 +1,84 @@
 import { describe, expect, it, vi } from 'vitest';
 import { api, ApiError } from './api';
-import { businesses, firstBusiness, json, mockBackend } from '../test/backend';
+import {
+  businesses,
+  enrichedAnalysis,
+  firstBusiness,
+  json,
+  mockBackend,
+  shortMessage,
+} from '../test/backend';
 
 describe('cliente da API', () => {
+  it.each([
+    { delivery_status: 'sent' },
+    { review_status: 'approved' },
+    { context_facts: [] },
+    { selected_need: 'scheduling' },
+  ])('rejeita rascunho com metadados ou evidências inconsistentes: %o', async (change) => {
+    mockBackend((path) =>
+      path.includes('messages/generate') ? json({ ...shortMessage, ...change }) : undefined,
+    );
+    await expect(
+      api.generateMessage({
+        business: firstBusiness(),
+        needs: [],
+        activity_evidence: [],
+        selected_need: 'online_menu',
+        channel: 'short_message',
+      }),
+    ).rejects.toThrow('dados inesperados');
+  });
+  it('rejeita formato de resposta diferente do pedido de mensagem', async () => {
+    mockBackend();
+    await expect(
+      api.generateMessage({
+        business: firstBusiness(),
+        needs: [],
+        activity_evidence: [],
+        selected_need: 'scheduling',
+        channel: 'short_message',
+      }),
+    ).rejects.toThrow('incompatível com o pedido');
+  });
+  it('exige o gerador de mensagens na verificação de compatibilidade', async () => {
+    mockBackend((path) =>
+      path === '/openapi.json'
+        ? json({
+            paths: {
+              '/api/v1/discovery/search': { post: {} },
+              '/api/v1/website-inspector/inspect': { post: {} },
+              '/api/v1/lead-scoring/score': { post: {} },
+              '/api/v1/business-analysis/analyze': { post: {} },
+            },
+          })
+        : undefined,
+    );
+    await expect(api.health()).rejects.toMatchObject({ code: 'incompatible_backend' });
+  });
+  it('rejeita sugestões com referências inventadas na resposta de análise', async () => {
+    const analysis = structuredClone(enrichedAnalysis);
+    if (!analysis.suggestions[0]) throw new Error('Fixture sem sugestão.');
+    analysis.suggestions[0].fact_ids = ['invented'];
+    mockBackend((path) => (path.includes('business-analysis') ? json(analysis) : undefined));
+    await expect(
+      api.analyze({ business: firstBusiness(), needs: [], activity_evidence: [] }),
+    ).rejects.toThrow('dados inesperados');
+  });
+  it('exige também o módulo de análise na verificação de compatibilidade', async () => {
+    mockBackend((path) =>
+      path === '/openapi.json'
+        ? json({
+            paths: {
+              '/api/v1/discovery/search': { post: {} },
+              '/api/v1/website-inspector/inspect': { post: {} },
+              '/api/v1/lead-scoring/score': { post: {} },
+            },
+          })
+        : undefined,
+    );
+    await expect(api.health()).rejects.toMatchObject({ code: 'incompatible_backend' });
+  });
   it('verifica os módulos disponíveis além da saúde do processo', async () => {
     const fetch = mockBackend();
     expect(await api.health()).toEqual({ status: 'ok' });

@@ -1,0 +1,80 @@
+{
+  "short_message": {
+    "status": "draft",
+    "review_status": "pending_review",
+    "delivery_status": "not_sent",
+    "locale": "pt-BR",
+    "provider": "mock",
+    "generation_mode": "simulated",
+    "prompt_version": "1.0.0",
+    "generated_at": "2026-10-25T12:00:00Z",
+    "business_is_simulated": true,
+    "selected_need": "online_menu",
+    "channel": "short_message",
+    "content": {
+      "subject": null,
+      "body": "Olá, equipe do Açaiteria Simulada 01, em Teresina! Sou da JK Dev. Desenvolvemos soluções como cardápio digital para negócios do segmento de açaiterias. Se cardápio digital fizer sentido para vocês, podemos conversar sobre as necessidades da equipe e avaliar um escopo adequado?"
+    },
+    "context_facts": [
+      {
+        "id": "need_0",
+        "kind": "documented_need",
+        "statement": "Necessidade registrada pelo operador: cardápio digital.",
+        "need": "online_menu",
+        "evidence": [
+          {
+            "source": "Fonte fictícia de teste",
+            "source_url": "https://source.example/",
+            "observed_at": "2026-10-25T11:00:00Z",
+            "description": "Observação fictícia para revisão."
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "Rascunho simulado por modelos de texto, sem LLM; revise conteúdo e contexto.",
+      "Gerar não aprova a mensagem nem autoriza contato. Nenhum envio foi realizado.",
+      "Fatos descrevem o contexto fornecido. Fontes e observações do operador não foram autenticadas ou verificadas automaticamente; revise antes de decidir.",
+      "O estabelecimento é fictício; o resultado serve para demonstração."
+    ]
+  },
+  "email": {
+    "status": "draft",
+    "review_status": "pending_review",
+    "delivery_status": "not_sent",
+    "locale": "pt-BR",
+    "provider": "mock",
+    "generation_mode": "simulated",
+    "prompt_version": "1.0.0",
+    "generated_at": "2026-10-25T12:00:00Z",
+    "business_is_simulated": true,
+    "selected_need": "online_menu",
+    "channel": "email",
+    "content": {
+      "subject": "Uma possibilidade de cardápio digital para o negócio",
+      "body": "Olá, equipe do Açaiteria Simulada 01, em Teresina!\n\nSou da JK Dev. Desenvolvemos soluções como cardápio digital para negócios do segmento de açaiterias.\n\nSe cardápio digital fizer sentido para vocês, podemos conversar sobre as necessidades da equipe e avaliar um escopo adequado?\n\nAtenciosamente,\nJK Dev"
+    },
+    "context_facts": [
+      {
+        "id": "need_0",
+        "kind": "documented_need",
+        "statement": "Necessidade registrada pelo operador: cardápio digital.",
+        "need": "online_menu",
+        "evidence": [
+          {
+            "source": "Fonte fictícia de teste",
+            "source_url": "https://source.example/",
+            "observed_at": "2026-10-25T11:00:00Z",
+            "description": "Observação fictícia para revisão."
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "Rascunho simulado por modelos de texto, sem LLM; revise conteúdo e contexto.",
+      "Gerar não aprova a mensagem nem autoriza contato. Nenhum envio foi realizado.",
+      "Fatos descrevem o contexto fornecido. Fontes e observações do operador não foram autenticadas ou verificadas automaticamente; revise antes de decidir.",
+      "O estabelecimento é fictício; o resultado serve para demonstração."
+    ]
+  }
+}

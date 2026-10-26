@@ -18,7 +18,14 @@ import {
 import { api, ApiError } from './lib/api';
 import { businessKey } from './lib/format';
 import { focusDetailsOnSmallScreen, returnToSelectedResult } from './lib/navigation';
-import type { Business, BusinessEntry, EvidenceAddition, SearchFilters } from './contracts';
+import type {
+  Business,
+  BusinessEntry,
+  EvidenceAddition,
+  MessageContent,
+  MessageGenerationOptions,
+  SearchFilters,
+} from './contracts';
 import { SearchForm } from './components/SearchForm';
 import { BusinessList } from './components/BusinessList';
 import { BusinessPanel } from './components/BusinessPanel';
@@ -138,8 +145,12 @@ export default function App() {
       if (controllers.current.get('search') === controller) controllers.current.delete('search');
     }
   }
-  async function perform(action: 'inspect' | 'score') {
+  async function perform(
+    action: 'inspect' | 'score' | 'analyze' | 'message',
+    options?: MessageGenerationOptions,
+  ) {
     if (!selected || !selectedKey || selected.pending) return;
+    if (action === 'message' && !options) return;
     const key = selectedKey;
     const snapshot = selected;
     const current = generation.current;
@@ -154,6 +165,9 @@ export default function App() {
             ...entry,
             inspection,
             score: undefined,
+            analysis: undefined,
+            message: undefined,
+            messageEdits: undefined,
             pending: null,
             error:
               inspection.status === 'found' && entry.review?.status === 'not_found'
@@ -161,7 +175,7 @@ export default function App() {
                 : null,
             errorAction: 'inspect',
           }));
-      } else {
+      } else if (action === 'score') {
         const score = await api.score(
           {
             business: snapshot.business,
@@ -174,6 +188,44 @@ export default function App() {
         );
         if (current === generation.current && !controller.signal.aborted)
           patchEntry(key, (entry) => ({ ...entry, score, pending: null }));
+      } else if (action === 'analyze') {
+        const analysis = await api.analyze(
+          {
+            business: snapshot.business,
+            website_inspection: snapshot.inspection,
+            website_review: snapshot.review,
+            needs: snapshot.needs,
+            activity_evidence: snapshot.activity,
+          },
+          controller.signal,
+        );
+        if (current === generation.current && !controller.signal.aborted)
+          patchEntry(key, (entry) => ({
+            ...entry,
+            analysis,
+            message: undefined,
+            messageEdits: undefined,
+            pending: null,
+          }));
+      } else if (options) {
+        const message = await api.generateMessage(
+          {
+            business: snapshot.business,
+            website_inspection: snapshot.inspection,
+            website_review: snapshot.review,
+            needs: snapshot.needs,
+            activity_evidence: snapshot.activity,
+            ...options,
+          },
+          controller.signal,
+        );
+        if (current === generation.current && !controller.signal.aborted)
+          patchEntry(key, (entry) => ({
+            ...entry,
+            message,
+            messageEdits: undefined,
+            pending: null,
+          }));
       }
       if (!controller.signal.aborted && health !== 'online') void checkHealth();
     } catch (caught) {
@@ -201,6 +253,10 @@ export default function App() {
     setModal(null);
     return null;
   }
+  function editMessage(content: MessageContent) {
+    if (!selectedKey || !selected?.message || selected.pending) return;
+    patchEntry(selectedKey, (entry) => ({ ...entry, messageEdits: content }));
+  }
   function addEvidence(addition: EvidenceAddition): string | null {
     if (!selected || !selectedKey || selected.pending)
       return 'Selecione um estabelecimento disponível para revisão.';
@@ -218,6 +274,9 @@ export default function App() {
     patchEntry(selectedKey, (entry) => ({
       ...entry,
       score: undefined,
+      analysis: undefined,
+      message: undefined,
+      messageEdits: undefined,
       error: null,
       ...(addition.kind === 'need'
         ? { needs: [...entry.needs, addition.value] }
@@ -233,6 +292,9 @@ export default function App() {
     patchEntry(selectedKey, (entry) => ({
       ...entry,
       score: undefined,
+      analysis: undefined,
+      message: undefined,
+      messageEdits: undefined,
       error: null,
       ...(kind === 'need'
         ? { needs: entry.needs.filter((_, current) => current !== index) }
@@ -355,8 +417,8 @@ export default function App() {
           {health === 'incompatible' && (
             <div className="error-banner" role="alert">
               O backend aberto é de uma versão anterior. Reinicie o servidor local e use o botão de
-              conexão para verificar novamente. A inspeção e a pontuação precisam dos módulos
-              atuais.
+              conexão para verificar novamente. A inspeção, a pontuação e a análise precisam dos
+              módulos atuais.
             </div>
           )}
           {error && (
@@ -411,6 +473,9 @@ export default function App() {
               entry={selected}
               onInspect={() => void perform('inspect')}
               onScore={() => void perform('score')}
+              onAnalyze={() => void perform('analyze')}
+              onGenerateMessage={(options) => void perform('message', options)}
+              onEditMessage={editMessage}
               onAddEvidence={() => setModal('evidence')}
               onRemove={removeEvidence}
               onBack={returnToSelectedResult}
@@ -438,7 +503,7 @@ export default function App() {
       {modal === 'help' && (
         <Modal title="Prospecção com contexto" onClose={() => setModal(null)}>
           <div className="help-content">
-            <p>Esta primeira versão conecta os três módulos disponíveis do JK Prospect AI.</p>
+            <p>Esta versão conecta os cinco módulos disponíveis do JK Prospect AI.</p>
             <ol>
               <li>
                 <strong>Pesquise.</strong> O Discovery retorna registros fictícios. Você pode
@@ -452,14 +517,22 @@ export default function App() {
                 <strong>Avalie.</strong> Calcule o score e confira a justificativa de cada critério.
                 Evidências ausentes não são fatos negativos.
               </li>
+              <li>
+                <strong>Analise.</strong> Gere uma análise simulada com hipóteses e sugestões
+                vinculadas ao contexto registrado. Revise tudo antes de decidir.
+              </li>
+              <li>
+                <strong>Prepare um rascunho.</strong> Escolha uma solução da análise, gere uma
+                mensagem simulada e edite o texto para sua revisão. Nenhum envio é realizado.
+              </li>
             </ol>
             <p>
-              O backend precisa estar iniciado para pesquisar, inspecionar e pontuar. A sessão não é
-              salva ao fechar ou atualizar esta página.
+              O backend precisa estar iniciado para pesquisar, inspecionar, pontuar e analisar. A
+              sessão não é salva ao fechar ou atualizar esta página.
             </p>
             <div className="notice compact">
-              <Search size={17} />
-              Nenhuma mensagem é enviada e nenhuma informação é gerada por IA nesta versão.
+              <Search size={17} />A análise usa regras e modelos de texto, sem IA real. Nenhuma
+              mensagem é enviada.
             </div>
           </div>
         </Modal>

@@ -126,6 +126,117 @@ export const scoreSchema = z.object({
   ),
 });
 export type LeadScore = z.infer<typeof scoreSchema>;
+export const analysisSchema = z
+  .object({
+    provider: z.literal('mock'),
+    generation_mode: z.literal('simulated'),
+    prompt_version: z.literal('1.0.0'),
+    basis: z.literal('provided_evidence'),
+    status: z.enum(['ready_for_review', 'insufficient_evidence']),
+    analyzed_at: dateTime,
+    business_is_simulated: z.boolean(),
+    facts: z
+      .array(
+        z.object({
+          id: z.string().regex(/^[a-z][a-z0-9_-]{0,39}$/),
+          kind: z.enum([
+            'business_profile',
+            'documented_need',
+            'digital_activity',
+            'website_review',
+            'website_inspection',
+          ]),
+          statement: z.string().min(1).max(1000),
+          need: z.enum(Object.keys(needLabels) as [DigitalNeed, ...DigitalNeed[]]).nullable(),
+          evidence: z
+            .array(
+              z.object({
+                source: z.string(),
+                source_url: webUrl,
+                observed_at: dateTime,
+                description: z.string(),
+              }),
+            )
+            .max(10),
+        }),
+      )
+      .min(1)
+      .max(43),
+    suggestions: z
+      .array(
+        z.object({
+          need: z.enum(Object.keys(needLabels) as [DigitalNeed, ...DigitalNeed[]]),
+          fact_ids: z.array(z.string()).min(1).max(21),
+          hypothesis: z.string().min(1).max(1000),
+          opportunity: z.string().min(1).max(1000),
+          suggested_solution: z.string().min(1).max(1000),
+          validation_question: z.string().min(1).max(1000),
+        }),
+      )
+      .max(8),
+    limitations: z.array(z.string().min(1).max(1000)).min(1).max(10),
+  })
+  .superRefine((analysis, context) => {
+    const facts = new Map(analysis.facts.map((fact) => [fact.id, fact]));
+    const valid =
+      facts.size === analysis.facts.length &&
+      new Set(analysis.suggestions.map((item) => item.need)).size === analysis.suggestions.length &&
+      analysis.suggestions.every(
+        (item) =>
+          new Set(item.fact_ids).size === item.fact_ids.length &&
+          item.fact_ids.every((id) => facts.get(id)?.need === item.need),
+      ) &&
+      analysis.status ===
+        (analysis.suggestions.length ? 'ready_for_review' : 'insufficient_evidence');
+    if (!valid) context.addIssue({ code: 'custom', message: 'Análise sem referências coerentes.' });
+  });
+export type BusinessAnalysis = z.infer<typeof analysisSchema>;
+export const messageContentSchema = z.object({
+  subject: z
+    .string()
+    .trim()
+    .min(1)
+    .max(160)
+    .refine((value) => !/[\u0000-\u001f\u007f]/.test(value))
+    .nullable(),
+  body: z.string().trim().min(1).max(2000),
+});
+export const messageDraftSchema = z
+  .object({
+    status: z.literal('draft'),
+    review_status: z.literal('pending_review'),
+    delivery_status: z.literal('not_sent'),
+    locale: z.literal('pt-BR'),
+    provider: z.literal('mock'),
+    generation_mode: z.literal('simulated'),
+    prompt_version: z.literal('1.0.0'),
+    generated_at: dateTime,
+    business_is_simulated: z.boolean(),
+    selected_need: z.enum(Object.keys(needLabels) as [DigitalNeed, ...DigitalNeed[]]),
+    channel: z.enum(['short_message', 'email']),
+    content: messageContentSchema,
+    context_facts: analysisSchema.shape.facts.max(21),
+    limitations: z.array(z.string().min(1).max(1000)).min(1).max(10),
+  })
+  .superRefine((draft, context) => {
+    const validFacts =
+      new Set(draft.context_facts.map((fact) => fact.id)).size === draft.context_facts.length &&
+      draft.context_facts.every(
+        (fact) => fact.need === draft.selected_need && fact.evidence.length > 0,
+      );
+    const validChannel =
+      draft.channel === 'email'
+        ? draft.content.subject !== null
+        : draft.content.subject === null && draft.content.body.length <= 900;
+    if (!validFacts || !validChannel)
+      context.addIssue({ code: 'custom', message: 'Rascunho sem contexto ou formato coerente.' });
+  });
+export type MessageDraft = z.infer<typeof messageDraftSchema>;
+export type MessageContent = z.infer<typeof messageContentSchema>;
+export interface MessageGenerationOptions {
+  selected_need: DigitalNeed;
+  channel: 'short_message' | 'email';
+}
 export interface ScoringEvidence {
   source: string;
   source_url: string;
@@ -151,16 +262,20 @@ export interface ScoreRequest {
   needs: NeedObservation[];
   activity_evidence: ScoringEvidence[];
 }
+export type MessageGenerationRequest = ScoreRequest & MessageGenerationOptions;
 export interface BusinessEntry {
   business: Business;
   inspection?: Inspection;
   score?: LeadScore;
+  analysis?: BusinessAnalysis;
+  message?: MessageDraft;
+  messageEdits?: MessageContent;
   review?: ManualReview;
   needs: NeedObservation[];
   activity: ScoringEvidence[];
-  pending: 'inspect' | 'score' | null;
+  pending: 'inspect' | 'score' | 'analyze' | 'message' | null;
   error: string | null;
-  errorAction?: 'inspect' | 'score';
+  errorAction?: 'inspect' | 'score' | 'analyze' | 'message';
 }
 export type EvidenceAddition =
   | { kind: 'need'; value: NeedObservation }
