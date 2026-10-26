@@ -1,0 +1,1 @@
+"""Políticas de execução tipadas."""

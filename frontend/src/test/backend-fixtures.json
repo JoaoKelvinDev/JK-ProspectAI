@@ -1,0 +1,814 @@
+{
+  "businesses": [
+    {
+      "name": "Açaiteria Simulada 01",
+      "category": "acaiterias",
+      "location": {
+        "city": "Teresina",
+        "state": "PI",
+        "country": "BR",
+        "address": "Rua Fictícia, 1"
+      },
+      "website": null,
+      "source_id": "mock-001",
+      "source": "mock",
+      "is_simulated": true,
+      "website_status": "not_checked"
+    },
+    {
+      "name": "Restaurante Simulado 02",
+      "category": "restaurantes",
+      "location": {
+        "city": "Teresina",
+        "state": "PI",
+        "country": "BR",
+        "address": "Rua Fictícia, 2"
+      },
+      "website": "https://restaurante.example/",
+      "source_id": "mock-002",
+      "source": "mock",
+      "is_simulated": true,
+      "website_status": "not_checked"
+    },
+    {
+      "name": "Lanchonete Simulada 03",
+      "category": "lanchonetes",
+      "location": {
+        "city": "Teresina",
+        "state": "PI",
+        "country": "BR",
+        "address": "Rua Fictícia, 3"
+      },
+      "website": null,
+      "source_id": "mock-003",
+      "source": "mock",
+      "is_simulated": true,
+      "website_status": "not_checked"
+    },
+    {
+      "name": "Bar Simulado 04",
+      "category": "bares",
+      "location": {
+        "city": "Teresina",
+        "state": "PI",
+        "country": "BR",
+        "address": "Rua Fictícia, 4"
+      },
+      "website": null,
+      "source_id": "mock-004",
+      "source": "mock",
+      "is_simulated": true,
+      "website_status": "not_checked"
+    },
+    {
+      "name": "Barbearia Simulada 05",
+      "category": "barbearias",
+      "location": {
+        "city": "Teresina",
+        "state": "PI",
+        "country": "BR",
+        "address": "Rua Fictícia, 5"
+      },
+      "website": null,
+      "source_id": "mock-005",
+      "source": "mock",
+      "is_simulated": true,
+      "website_status": "not_checked"
+    },
+    {
+      "name": "Salão Simulado 06",
+      "category": "saloes_de_beleza",
+      "location": {
+        "city": "Teresina",
+        "state": "PI",
+        "country": "BR",
+        "address": "Rua Fictícia, 6"
+      },
+      "website": null,
+      "source_id": "mock-006",
+      "source": "mock",
+      "is_simulated": true,
+      "website_status": "not_checked"
+    },
+    {
+      "name": "Loja Simulada 07",
+      "category": "lojas_de_roupas",
+      "location": {
+        "city": "Teresina",
+        "state": "PI",
+        "country": "BR",
+        "address": "Rua Fictícia, 7"
+      },
+      "website": "https://loja.example/",
+      "source_id": "mock-007",
+      "source": "mock",
+      "is_simulated": true,
+      "website_status": "not_checked"
+    },
+    {
+      "name": "Mercadinho Simulado 08",
+      "category": "mercadinhos",
+      "location": {
+        "city": "Teresina",
+        "state": "PI",
+        "country": "BR",
+        "address": "Rua Fictícia, 8"
+      },
+      "website": null,
+      "source_id": "mock-008",
+      "source": "mock",
+      "is_simulated": true,
+      "website_status": "not_checked"
+    },
+    {
+      "name": "Comércio Simulado 09",
+      "category": "pequenos_comercios",
+      "location": {
+        "city": "Teresina",
+        "state": "PI",
+        "country": "BR",
+        "address": "Rua Fictícia, 9"
+      },
+      "website": null,
+      "source_id": "mock-009",
+      "source": "mock",
+      "is_simulated": true,
+      "website_status": "not_checked"
+    },
+    {
+      "name": "Serviço Simulado 10",
+      "category": "prestadores_de_servicos",
+      "location": {
+        "city": "Teresina",
+        "state": "PI",
+        "country": "BR",
+        "address": "Rua Fictícia, 10"
+      },
+      "website": null,
+      "source_id": "mock-010",
+      "source": "mock",
+      "is_simulated": true,
+      "website_status": "not_checked"
+    },
+    {
+      "name": "Estabelecimento Simulado 11",
+      "category": "outros_estabelecimentos",
+      "location": {
+        "city": "Teresina",
+        "state": "PI",
+        "country": "BR",
+        "address": "Rua Fictícia, 11"
+      },
+      "website": null,
+      "source_id": "mock-011",
+      "source": "mock",
+      "is_simulated": true,
+      "website_status": "not_checked"
+    },
+    {
+      "name": "Restaurante Simulado 12",
+      "category": "restaurantes",
+      "location": {
+        "city": "Teresina",
+        "state": "PI",
+        "country": "BR",
+        "address": "Rua Fictícia, 12"
+      },
+      "website": null,
+      "source_id": "mock-012",
+      "source": "mock",
+      "is_simulated": true,
+      "website_status": "not_checked"
+    }
+  ],
+  "inspection": {
+    "scope": "provided_url",
+    "status": "not_checked",
+    "reason": "simulated_business",
+    "requested_url": null,
+    "final_url": null,
+    "checked_at": null,
+    "confidence": null,
+    "is_simulated": true,
+    "evidence": []
+  },
+  "basicScore": {
+    "rules_version": "1.0.0",
+    "basis": "provided_evidence",
+    "score": 5,
+    "max_score": 100,
+    "assessed_max_score": 10,
+    "evaluated_at": "2026-10-25T23:14:07.137533Z",
+    "is_simulated": true,
+    "criteria": [
+      {
+        "name": "website_opportunity",
+        "points": 0,
+        "max_points": 25,
+        "assessed": false,
+        "reason": "Ausência de site não estabelecida; URL vazia ou falha HTTP não pontuam.",
+        "evidence_urls": []
+      },
+      {
+        "name": "digital_need",
+        "points": 0,
+        "max_points": 30,
+        "assessed": false,
+        "reason": "Nenhuma necessidade com evidência atual foi informada.",
+        "evidence_urls": []
+      },
+      {
+        "name": "digital_activity",
+        "points": 0,
+        "max_points": 15,
+        "assessed": false,
+        "reason": "Atividade desconhecida; não equivale a negócio inativo.",
+        "evidence_urls": []
+      },
+      {
+        "name": "service_fit",
+        "points": 0,
+        "max_points": 20,
+        "assessed": false,
+        "reason": "Segmento isolado não comprova compatibilidade de uma solução.",
+        "evidence_urls": []
+      },
+      {
+        "name": "data_quality",
+        "points": 5,
+        "max_points": 10,
+        "assessed": true,
+        "reason": "Endereço: 3 pontos; identificador da fonte: 2; evidência atual referenciada: 5.",
+        "evidence_urls": []
+      }
+    ],
+    "warnings": [
+      "simulated_data",
+      "website_not_assessed",
+      "need_not_assessed",
+      "activity_not_assessed"
+    ]
+  },
+  "enrichedScore": {
+    "rules_version": "1.0.0",
+    "basis": "provided_evidence",
+    "score": 45,
+    "max_score": 100,
+    "assessed_max_score": 60,
+    "evaluated_at": "2026-10-25T23:14:07.139533Z",
+    "is_simulated": true,
+    "criteria": [
+      {
+        "name": "website_opportunity",
+        "points": 0,
+        "max_points": 25,
+        "assessed": false,
+        "reason": "Ausência de site não estabelecida; URL vazia ou falha HTTP não pontuam.",
+        "evidence_urls": []
+      },
+      {
+        "name": "digital_need",
+        "points": 15,
+        "max_points": 30,
+        "assessed": true,
+        "reason": "15 pontos por necessidade distinta documentada, até 30 pontos.",
+        "evidence_urls": [
+          "https://source.example/"
+        ]
+      },
+      {
+        "name": "digital_activity",
+        "points": 0,
+        "max_points": 15,
+        "assessed": false,
+        "reason": "Atividade desconhecida; não equivale a negócio inativo.",
+        "evidence_urls": []
+      },
+      {
+        "name": "service_fit",
+        "points": 20,
+        "max_points": 20,
+        "assessed": true,
+        "reason": "Necessidade documentada corresponde a serviço oferecido pela JK Dev.",
+        "evidence_urls": [
+          "https://source.example/"
+        ]
+      },
+      {
+        "name": "data_quality",
+        "points": 10,
+        "max_points": 10,
+        "assessed": true,
+        "reason": "Endereço: 3 pontos; identificador da fonte: 2; evidência atual referenciada: 5.",
+        "evidence_urls": [
+          "https://source.example/"
+        ]
+      }
+    ],
+    "warnings": [
+      "simulated_data",
+      "website_not_assessed",
+      "activity_not_assessed"
+    ]
+  },
+  "scoreVariants": {
+    "000": {
+      "rules_version": "1.0.0",
+      "basis": "provided_evidence",
+      "score": 5,
+      "max_score": 100,
+      "assessed_max_score": 10,
+      "evaluated_at": "2026-10-25T23:19:29.405407Z",
+      "is_simulated": true,
+      "criteria": [
+        {
+          "name": "website_opportunity",
+          "points": 0,
+          "max_points": 25,
+          "assessed": false,
+          "reason": "Ausência de site não estabelecida; URL vazia ou falha HTTP não pontuam.",
+          "evidence_urls": []
+        },
+        {
+          "name": "digital_need",
+          "points": 0,
+          "max_points": 30,
+          "assessed": false,
+          "reason": "Nenhuma necessidade com evidência atual foi informada.",
+          "evidence_urls": []
+        },
+        {
+          "name": "digital_activity",
+          "points": 0,
+          "max_points": 15,
+          "assessed": false,
+          "reason": "Atividade desconhecida; não equivale a negócio inativo.",
+          "evidence_urls": []
+        },
+        {
+          "name": "service_fit",
+          "points": 0,
+          "max_points": 20,
+          "assessed": false,
+          "reason": "Segmento isolado não comprova compatibilidade de uma solução.",
+          "evidence_urls": []
+        },
+        {
+          "name": "data_quality",
+          "points": 5,
+          "max_points": 10,
+          "assessed": true,
+          "reason": "Endereço: 3 pontos; identificador da fonte: 2; evidência atual referenciada: 5.",
+          "evidence_urls": []
+        }
+      ],
+      "warnings": [
+        "simulated_data",
+        "website_not_assessed",
+        "need_not_assessed",
+        "activity_not_assessed"
+      ]
+    },
+    "001": {
+      "rules_version": "1.0.0",
+      "basis": "provided_evidence",
+      "score": 35,
+      "max_score": 100,
+      "assessed_max_score": 35,
+      "evaluated_at": "2026-10-25T23:19:29.407809Z",
+      "is_simulated": true,
+      "criteria": [
+        {
+          "name": "website_opportunity",
+          "points": 25,
+          "max_points": 25,
+          "assessed": true,
+          "reason": "Site não localizado na revisão manual documentada; não prova inexistência.",
+          "evidence_urls": [
+            "https://source.example/",
+            "https://second.example/"
+          ]
+        },
+        {
+          "name": "digital_need",
+          "points": 0,
+          "max_points": 30,
+          "assessed": false,
+          "reason": "Nenhuma necessidade com evidência atual foi informada.",
+          "evidence_urls": []
+        },
+        {
+          "name": "digital_activity",
+          "points": 0,
+          "max_points": 15,
+          "assessed": false,
+          "reason": "Atividade desconhecida; não equivale a negócio inativo.",
+          "evidence_urls": []
+        },
+        {
+          "name": "service_fit",
+          "points": 0,
+          "max_points": 20,
+          "assessed": false,
+          "reason": "Segmento isolado não comprova compatibilidade de uma solução.",
+          "evidence_urls": []
+        },
+        {
+          "name": "data_quality",
+          "points": 10,
+          "max_points": 10,
+          "assessed": true,
+          "reason": "Endereço: 3 pontos; identificador da fonte: 2; evidência atual referenciada: 5.",
+          "evidence_urls": [
+            "https://source.example/",
+            "https://second.example/"
+          ]
+        }
+      ],
+      "warnings": [
+        "simulated_data",
+        "need_not_assessed",
+        "activity_not_assessed"
+      ]
+    },
+    "010": {
+      "rules_version": "1.0.0",
+      "basis": "provided_evidence",
+      "score": 25,
+      "max_score": 100,
+      "assessed_max_score": 25,
+      "evaluated_at": "2026-10-25T23:19:29.409816Z",
+      "is_simulated": true,
+      "criteria": [
+        {
+          "name": "website_opportunity",
+          "points": 0,
+          "max_points": 25,
+          "assessed": false,
+          "reason": "Ausência de site não estabelecida; URL vazia ou falha HTTP não pontuam.",
+          "evidence_urls": []
+        },
+        {
+          "name": "digital_need",
+          "points": 0,
+          "max_points": 30,
+          "assessed": false,
+          "reason": "Nenhuma necessidade com evidência atual foi informada.",
+          "evidence_urls": []
+        },
+        {
+          "name": "digital_activity",
+          "points": 15,
+          "max_points": 15,
+          "assessed": true,
+          "reason": "Atividade digital documentada nos últimos 90 dias.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        },
+        {
+          "name": "service_fit",
+          "points": 0,
+          "max_points": 20,
+          "assessed": false,
+          "reason": "Segmento isolado não comprova compatibilidade de uma solução.",
+          "evidence_urls": []
+        },
+        {
+          "name": "data_quality",
+          "points": 10,
+          "max_points": 10,
+          "assessed": true,
+          "reason": "Endereço: 3 pontos; identificador da fonte: 2; evidência atual referenciada: 5.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        }
+      ],
+      "warnings": [
+        "simulated_data",
+        "website_not_assessed",
+        "need_not_assessed"
+      ]
+    },
+    "011": {
+      "rules_version": "1.0.0",
+      "basis": "provided_evidence",
+      "score": 50,
+      "max_score": 100,
+      "assessed_max_score": 50,
+      "evaluated_at": "2026-10-25T23:19:29.411813Z",
+      "is_simulated": true,
+      "criteria": [
+        {
+          "name": "website_opportunity",
+          "points": 25,
+          "max_points": 25,
+          "assessed": true,
+          "reason": "Site não localizado na revisão manual documentada; não prova inexistência.",
+          "evidence_urls": [
+            "https://source.example/",
+            "https://second.example/"
+          ]
+        },
+        {
+          "name": "digital_need",
+          "points": 0,
+          "max_points": 30,
+          "assessed": false,
+          "reason": "Nenhuma necessidade com evidência atual foi informada.",
+          "evidence_urls": []
+        },
+        {
+          "name": "digital_activity",
+          "points": 15,
+          "max_points": 15,
+          "assessed": true,
+          "reason": "Atividade digital documentada nos últimos 90 dias.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        },
+        {
+          "name": "service_fit",
+          "points": 0,
+          "max_points": 20,
+          "assessed": false,
+          "reason": "Segmento isolado não comprova compatibilidade de uma solução.",
+          "evidence_urls": []
+        },
+        {
+          "name": "data_quality",
+          "points": 10,
+          "max_points": 10,
+          "assessed": true,
+          "reason": "Endereço: 3 pontos; identificador da fonte: 2; evidência atual referenciada: 5.",
+          "evidence_urls": [
+            "https://source.example/",
+            "https://second.example/"
+          ]
+        }
+      ],
+      "warnings": [
+        "simulated_data",
+        "need_not_assessed"
+      ]
+    },
+    "100": {
+      "rules_version": "1.0.0",
+      "basis": "provided_evidence",
+      "score": 45,
+      "max_score": 100,
+      "assessed_max_score": 60,
+      "evaluated_at": "2026-10-25T23:19:29.413815Z",
+      "is_simulated": true,
+      "criteria": [
+        {
+          "name": "website_opportunity",
+          "points": 0,
+          "max_points": 25,
+          "assessed": false,
+          "reason": "Ausência de site não estabelecida; URL vazia ou falha HTTP não pontuam.",
+          "evidence_urls": []
+        },
+        {
+          "name": "digital_need",
+          "points": 15,
+          "max_points": 30,
+          "assessed": true,
+          "reason": "15 pontos por necessidade distinta documentada, até 30 pontos.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        },
+        {
+          "name": "digital_activity",
+          "points": 0,
+          "max_points": 15,
+          "assessed": false,
+          "reason": "Atividade desconhecida; não equivale a negócio inativo.",
+          "evidence_urls": []
+        },
+        {
+          "name": "service_fit",
+          "points": 20,
+          "max_points": 20,
+          "assessed": true,
+          "reason": "Necessidade documentada corresponde a serviço oferecido pela JK Dev.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        },
+        {
+          "name": "data_quality",
+          "points": 10,
+          "max_points": 10,
+          "assessed": true,
+          "reason": "Endereço: 3 pontos; identificador da fonte: 2; evidência atual referenciada: 5.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        }
+      ],
+      "warnings": [
+        "simulated_data",
+        "website_not_assessed",
+        "activity_not_assessed"
+      ]
+    },
+    "101": {
+      "rules_version": "1.0.0",
+      "basis": "provided_evidence",
+      "score": 70,
+      "max_score": 100,
+      "assessed_max_score": 85,
+      "evaluated_at": "2026-10-25T23:19:29.415814Z",
+      "is_simulated": true,
+      "criteria": [
+        {
+          "name": "website_opportunity",
+          "points": 25,
+          "max_points": 25,
+          "assessed": true,
+          "reason": "Site não localizado na revisão manual documentada; não prova inexistência.",
+          "evidence_urls": [
+            "https://source.example/",
+            "https://second.example/"
+          ]
+        },
+        {
+          "name": "digital_need",
+          "points": 15,
+          "max_points": 30,
+          "assessed": true,
+          "reason": "15 pontos por necessidade distinta documentada, até 30 pontos.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        },
+        {
+          "name": "digital_activity",
+          "points": 0,
+          "max_points": 15,
+          "assessed": false,
+          "reason": "Atividade desconhecida; não equivale a negócio inativo.",
+          "evidence_urls": []
+        },
+        {
+          "name": "service_fit",
+          "points": 20,
+          "max_points": 20,
+          "assessed": true,
+          "reason": "Necessidade documentada corresponde a serviço oferecido pela JK Dev.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        },
+        {
+          "name": "data_quality",
+          "points": 10,
+          "max_points": 10,
+          "assessed": true,
+          "reason": "Endereço: 3 pontos; identificador da fonte: 2; evidência atual referenciada: 5.",
+          "evidence_urls": [
+            "https://source.example/",
+            "https://second.example/"
+          ]
+        }
+      ],
+      "warnings": [
+        "simulated_data",
+        "activity_not_assessed"
+      ]
+    },
+    "110": {
+      "rules_version": "1.0.0",
+      "basis": "provided_evidence",
+      "score": 60,
+      "max_score": 100,
+      "assessed_max_score": 75,
+      "evaluated_at": "2026-10-25T23:19:29.417304Z",
+      "is_simulated": true,
+      "criteria": [
+        {
+          "name": "website_opportunity",
+          "points": 0,
+          "max_points": 25,
+          "assessed": false,
+          "reason": "Ausência de site não estabelecida; URL vazia ou falha HTTP não pontuam.",
+          "evidence_urls": []
+        },
+        {
+          "name": "digital_need",
+          "points": 15,
+          "max_points": 30,
+          "assessed": true,
+          "reason": "15 pontos por necessidade distinta documentada, até 30 pontos.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        },
+        {
+          "name": "digital_activity",
+          "points": 15,
+          "max_points": 15,
+          "assessed": true,
+          "reason": "Atividade digital documentada nos últimos 90 dias.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        },
+        {
+          "name": "service_fit",
+          "points": 20,
+          "max_points": 20,
+          "assessed": true,
+          "reason": "Necessidade documentada corresponde a serviço oferecido pela JK Dev.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        },
+        {
+          "name": "data_quality",
+          "points": 10,
+          "max_points": 10,
+          "assessed": true,
+          "reason": "Endereço: 3 pontos; identificador da fonte: 2; evidência atual referenciada: 5.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        }
+      ],
+      "warnings": [
+        "simulated_data",
+        "website_not_assessed"
+      ]
+    },
+    "111": {
+      "rules_version": "1.0.0",
+      "basis": "provided_evidence",
+      "score": 85,
+      "max_score": 100,
+      "assessed_max_score": 100,
+      "evaluated_at": "2026-10-25T23:19:29.419306Z",
+      "is_simulated": true,
+      "criteria": [
+        {
+          "name": "website_opportunity",
+          "points": 25,
+          "max_points": 25,
+          "assessed": true,
+          "reason": "Site não localizado na revisão manual documentada; não prova inexistência.",
+          "evidence_urls": [
+            "https://source.example/",
+            "https://second.example/"
+          ]
+        },
+        {
+          "name": "digital_need",
+          "points": 15,
+          "max_points": 30,
+          "assessed": true,
+          "reason": "15 pontos por necessidade distinta documentada, até 30 pontos.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        },
+        {
+          "name": "digital_activity",
+          "points": 15,
+          "max_points": 15,
+          "assessed": true,
+          "reason": "Atividade digital documentada nos últimos 90 dias.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        },
+        {
+          "name": "service_fit",
+          "points": 20,
+          "max_points": 20,
+          "assessed": true,
+          "reason": "Necessidade documentada corresponde a serviço oferecido pela JK Dev.",
+          "evidence_urls": [
+            "https://source.example/"
+          ]
+        },
+        {
+          "name": "data_quality",
+          "points": 10,
+          "max_points": 10,
+          "assessed": true,
+          "reason": "Endereço: 3 pontos; identificador da fonte: 2; evidência atual referenciada: 5.",
+          "evidence_urls": [
+            "https://source.example/",
+            "https://second.example/"
+          ]
+        }
+      ],
+      "warnings": [
+        "simulated_data"
+      ]
+    }
+  }
+}
